@@ -148,32 +148,32 @@ MEDIA_ROOT = BASE_DIR/ 'static/images'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #S3 BUCKETS CONFIG
-AWS_ACCESS_KEY_ID = 'AKIA346IUJR3ZV3U3AGU'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'studypaltonny'
+# AWS_ACCESS_KEY_ID = 'AKIA346IUJR3ZV3U3AGU'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'studypaltonny'
 
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-[
-    {
-        "AllowedHeaders": [
-            "*"
-        ],
-        "AllowedMethods": [
-            "HEAD",
-            "GET",
-            "PUT",
-            "POST",
-            "DELETE"
-        ],
-        "AllowedOrigins": [
-            "https://www.studypal.com"
-        ],
-        "ExposeHeaders": [
-             "ETag",
-             "x-amz-meta-custom-header"]
-    }
-]
+# [
+#     {
+#         "AllowedHeaders": [
+#             "*"
+#         ],
+#         "AllowedMethods": [
+#             "HEAD",
+#             "GET",
+#             "PUT",
+#             "POST",
+#             "DELETE"
+#         ],
+#         "AllowedOrigins": [
+#             "https://www.studypal.com"
+#         ],
+#         "ExposeHeaders": [
+#              "ETag",
+#              "x-amz-meta-custom-header"]
+#     }
+# ]
