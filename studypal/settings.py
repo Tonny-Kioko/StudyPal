@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from storages.backends.s3boto3 import S3Boto3Storage
+import django_heroku
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    
+    
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,11 +87,11 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'studypal',
-        'USER': 'postgres',
-        'PASSWORD': 'tonny',
-        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd8qm08c45vn94p',
+        'USER': 'acadbpfpjbwdyl',
+        'PASSWORD': '3722586f0717369d27cc151ed13d2a1b3cef328eaf3a029f1a9e13a11a89c8f0',
+        'HOST': 'ec2-34-235-31-124.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -130,9 +133,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+
 STATIC_ROOT = '/staticfiles/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
+
+django_heroku.setting(locals())
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
@@ -147,33 +153,33 @@ MEDIA_ROOT = BASE_DIR/ 'static/images'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#S3 BUCKETS CONFIG
-AWS_ACCESS_KEY_ID = 'AKIA346IUJR3ZV3U3AGU'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'studypaltonny'
+# # #S3 BUCKETS CONFIG
+# AWS_ACCESS_KEY_ID = 'AKIA346IUJR3ZV3U3AGU'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'studypaltonny'
 
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-[
-    {
-        "AllowedHeaders": [
-            "*"
-        ],
-        "AllowedMethods": [
-            "HEAD",
-            "GET",
-            "PUT",
-            "POST",
-            "DELETE"
-        ],
-        "AllowedOrigins": [
-            "https://www.studypal.com"
-        ],
-        "ExposeHeaders": [
-             "ETag",
-             "x-amz-meta-custom-header"]
-    }
-]
+# [
+#     {
+#         "AllowedHeaders": [
+#             "*"
+#         ],
+#         "AllowedMethods": [
+#             "HEAD",
+#             "GET",
+#             "PUT",
+#             "POST",
+#             "DELETE"
+#         ],
+#         "AllowedOrigins": [
+#             "https://www.studypal.com"
+#         ],
+#         "ExposeHeaders": [
+#              "ETag",
+#              "x-amz-meta-custom-header"]
+#     }
+# ]
