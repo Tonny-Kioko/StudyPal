@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from storages.backends.s3boto3 import S3Boto3Storage
-import django_heroku
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -138,7 +138,7 @@ STATIC_ROOT = '/staticfiles/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
-django_heroku.setting(locals())
+
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
