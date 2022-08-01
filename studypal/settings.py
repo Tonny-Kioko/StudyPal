@@ -87,11 +87,11 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd8qm08c45vn94p',
-        'USER': 'acadbpfpjbwdyl',
-        'PASSWORD': '3722586f0717369d27cc151ed13d2a1b3cef328eaf3a029f1a9e13a11a89c8f0',
-        'HOST': 'ec2-34-235-31-124.compute-1.amazonaws.com',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd8o9k5glrtom3o',
+        'USER': 'wditbydbhoytlu',
+        'PASSWORD': 'a9c1d58cfb929bc9590b0170140bf3a5db8486d354ae4a94c52d881e34a76eb3',
+        'HOST': 'ec2-34-193-44-192.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
