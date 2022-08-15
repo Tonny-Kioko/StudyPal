@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'd8o9k5glrtom3o',
         'USER': 'wditbydbhoytlu',
         'PASSWORD': 'a9c1d58cfb929bc9590b0170140bf3a5db8486d354ae4a94c52d881e34a76eb3',
