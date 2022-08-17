@@ -16,7 +16,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, null= True)
     bio = models.TextField(null=True)
 
-    avatar = models.ImageField(null = True, default = "")
+    avatar = models.ImageField(null = True, default = "C:\Users\cfaki\OneDrive\Eneokazi\CIFA\ALX\Things\Django\ecommerce\static\img\OIP.jpg")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELD = []
