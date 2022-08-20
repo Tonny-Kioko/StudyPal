@@ -1,0 +1,1 @@
+web: gunicorn studypal.wsgi --log-file -
