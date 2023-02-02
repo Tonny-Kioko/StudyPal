@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from turtle import update
-from storages.backends.s3boto3 import S3Boto3Storage
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'base.apps.BaseConfig',
-    'storages'
+   
     
 ]
 
@@ -85,19 +85,29 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'd8o9k5glrtom3o',
+#         'USER': 'wditbydbhoytlu',
+#         'PASSWORD': 'a9c1d58cfb929bc9590b0170140bf3a5db8486d354ae4a94c52d881e34a76eb3',
+#         'HOST': 'ec2-34-193-44-192.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
+# import dj_database_url
+# db_from_practice = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'], update()
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd8o9k5glrtom3o',
-        'USER': 'wditbydbhoytlu',
-        'PASSWORD': 'a9c1d58cfb929bc9590b0170140bf3a5db8486d354ae4a94c52d881e34a76eb3',
-        'HOST': 'ec2-34-193-44-192.compute-1.amazonaws.com',
-        'PORT': '5432',
-    }
-}
-import dj_database_url
-db_from_practice = dj_database_url.config(conn_max_age=600)
-DATABASES['default'], update()
+'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'study_pal',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+    'USER': 'root',
+    'PASSWORD': '',
+}}
 
 
 
