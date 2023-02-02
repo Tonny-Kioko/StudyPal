@@ -1,2 +1,2 @@
 # StudyPal
-Learn with Pals Worldwide!
+Learn with Pals Worldwide! yeah
