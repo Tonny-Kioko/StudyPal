@@ -7,12 +7,12 @@ from django.contrib.auth.forms import UserCreationForm
 class MyUserCreationform(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['name', 'email', 'password1', 'password2']
 
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = 'name', 'topic','description'
         exclude = ['host', 'participants']
 
 class UserForm(ModelForm):
