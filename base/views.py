@@ -89,6 +89,7 @@ def home(request):
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
     return render(request, 'home.html', context)
 
+
 def room(request, pk):
     room = Room.objects.get(id = pk)
     room_messages = room.message_set.all()
@@ -103,7 +104,7 @@ def room(request, pk):
         room.participants.add(request.user)
         return redirect('room', pk=room.id)
 
-    context = {'rooms': room, 'room_messages': room_messages,'participants': participants}    
+    context = {'rooms': room, 'room_messages': room_messages,'participants': participants,}    
     return render(request, 'room.html')
 
 
