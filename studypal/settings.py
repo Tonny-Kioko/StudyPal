@@ -43,7 +43,15 @@ INSTALLED_APPS = [
 
     'base.apps.BaseConfig',
     'allauthallauth.account',
-    'allauth.socialaccount',  
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.linkedin',
+    'allauth.socialaccount.providers.twitter',
+
+
+
 
    
     
@@ -67,7 +75,7 @@ ROOT_URLCONF = 'studypal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'
+        'DIRS': [os.path.normpath(os.path.join(BASE_DIR, 'templates')),
             
         ],
         'APP_DIRS': True,
@@ -81,6 +89,11 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 WSGI_APPLICATION = 'studypal.wsgi.application'
 
