@@ -37,11 +37,12 @@
         </div>
         {% else %}
 
-        Not Logged In -->
+        
         <a href="{% url 'login' %}">
             <img src="{% static 'images/avatar.svg' %}" />
             <p>Login</p>
         </a>
+        
 
         {% endif %}
 

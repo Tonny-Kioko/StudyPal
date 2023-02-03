@@ -15,7 +15,7 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
 
 
-    avatar = models.ImageField(null=True, default="StudyPal\static\images\Screenshot (99).png")
+    avatar = models.ImageField(null=True, default="")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -26,7 +26,6 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.name
-  
   
 
 class Room(models.Model):
