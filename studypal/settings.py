@@ -15,6 +15,7 @@ from turtle import update
 
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,9 +76,9 @@ ROOT_URLCONF = 'studypal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.normpath(os.path.join(BASE_DIR, 'templates')),
+        'DIRS':(BASE_DIR, 'templates'),
             
-        ],
+        
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,6 +95,24 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+#The account confirmation will require a new request after three days
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3, 
+
+#This option allows you to set whether the email address should be verified to register
+ACCOUNT_EMAIL_REQUIRED = True,
+
+#email verification is necessary for a user to log in
+ACCOUNT_EMAIL_VERIFICATION = "mandatory",
+
+#Login Attempt Limit:
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5,
+
+#Login Attempt Limit timeout: 
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 3600, #Two Hours before retrying.
+
+
+
 
 WSGI_APPLICATION = 'studypal.wsgi.application'
 
