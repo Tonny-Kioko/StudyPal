@@ -51,12 +51,60 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
 
-
-
-
-   
     
 ]
+
+# SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED ,
+# SOCIALACCOUNT_EMAIL_REQUIRED = ACCOUNT_EMAIL_REQUIRED, 
+SOCIALACCOUNT_STORE_TOKENS=False, 
+
+#Social Account Providers settings for signup options
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    },
+     'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }, 
+    'twitter':{
+        'SCOPE': [
+            'profile', 
+            'email', 
+        ], 
+        'AUTH_PARAMS':{
+            'access_type':'online',
+        }
+    }
+}
+
+
+
 
 MIDDLEWARE = [
     
