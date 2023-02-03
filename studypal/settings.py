@@ -111,7 +111,9 @@ ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5,
 #Login Attempt Limit timeout: 
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 3600, #Two Hours before retrying.
 
-
+ACCOUNT_FORMS = {
+    'signup': 'StudyPal.forms.MyUserCreationForm'
+}
 
 
 WSGI_APPLICATION = 'studypal.wsgi.application'

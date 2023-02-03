@@ -6,12 +6,14 @@ from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
 from django.forms import CharField, ModelForm
+from allauth.account.forms import SignupForm
+from django import forms
 
 # Create your models here.
 
 class User(AbstractUser):
-    name = models.CharField(max_length=200, null=True)
-    email= models.EmailField(unique=True, null=True)
+    name = models.CharField(max_length=200, null=True, label = 'Your Name')
+    email= models.EmailField(unique=True, null=True, label = 'Your Email')
     bio = models.TextField(null=True)
 
 
