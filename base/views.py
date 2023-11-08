@@ -1,3 +1,4 @@
+from base64 import encode
 from email import message
 from pydoc_data.topics import topics
 from django.contrib import messages
@@ -13,6 +14,8 @@ from django.contrib.auth.views import LoginView
 
 
 
+
+
 # Create your views here.
 
 # rooms = [
@@ -23,8 +26,14 @@ from django.contrib.auth.views import LoginView
    # {'id':5, 'name': 'Learning Design With Pals!'},
 #]
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+
 def loginPage(request):
     page = 'login'
+    
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -34,8 +43,9 @@ def loginPage(request):
 
         try:
             user = User.objects.get(email=email)
-        except:
+        except User.DoesNotExist:
             messages.error(request, "User does not Exist")
+            return redirect('login')  # Redirect back to the login page with the error message.
 
         user = authenticate(request, email=email, password=password)
 
@@ -43,32 +53,47 @@ def loginPage(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'User name or password does not exist')
+            messages.error(request, 'Username or password is incorrect')
+            return redirect('login')  # Redirect back to the login page with the error message.
 
     context = {'page': page}
     return render(request, 'login_register.html', context)
-
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
 
 
+
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.forms import ValidationError
+
 def registerUser(request):
     form = MyUserCreationform()
 
     if request.method == "POST":
         form = MyUserCreationform(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, "An error Occurred in Registration")
+        try:
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.username = user.username.lower()
+                user.save()
+                login(request, user)
+                return redirect('home')
+            else:
+                raise ValidationError("Invalid form data")
+        except ValidationError as e:
+            messages.error(request, f"An error occurred in registration: {str(e)}")
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+            # Log the error for debugging purposes.
+            print(e)
+            # You can log the error using Python's built-in logging or external logging libraries.
 
     return render(request, 'login_register.html', {'form': form})
+
 
 
 def home(request):
