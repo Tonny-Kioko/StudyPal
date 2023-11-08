@@ -3,7 +3,7 @@ import json
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 import base64
-from trueways.cart import CartObject
+
 
 import requests
 import json

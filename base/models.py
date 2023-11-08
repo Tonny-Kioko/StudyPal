@@ -12,8 +12,8 @@ from django import forms
 # Create your models here.
 
 class User(AbstractUser):
-    name = models.CharField(max_length=200, null=True, label = 'Your Name')
-    email= models.EmailField(unique=True, null=True, label = 'Your Email')
+    name = models.CharField(max_length=200, null=True)
+    email= models.EmailField(unique=True, null=True)
     bio = models.TextField(null=True)
 
 

@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'mpesa', 
     'base.apps.BaseConfig',
-    'allauthallauth.account',
+    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.github',
@@ -187,7 +187,7 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'study_pal',
+    'NAME': 'studypal',
     'HOST': '127.0.0.1',
     'PORT': '3306',
     'USER': 'root',

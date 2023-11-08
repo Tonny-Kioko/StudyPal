@@ -2,8 +2,8 @@ from email import message
 from pydoc_data.topics import topics
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import Room, Topic, Message, User
-from .forms import RoomForm, UserForm,MyUserCreationform
+from base.models import Room, Topic, Message, User
+from base.forms import RoomForm, UserForm,MyUserCreationform
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required

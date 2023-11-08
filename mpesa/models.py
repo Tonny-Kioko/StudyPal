@@ -18,7 +18,7 @@ class BaseModel(models.Model):
 These models will work with the m-pesa API to process payments to ensure a smooth 
 purchasing process. 
 '''
-class MpesaCalls(BaseModel):
+class MpesaCalls(BaseModel):    
     ip_address = models.TextField()
     caller = models.TextField()
     conversation_id = models.TextField()
@@ -27,6 +27,7 @@ class MpesaCalls(BaseModel):
     class Meta:
         verbose_name = 'Mpesa Call'
         verbose_name_plural = 'Mpesa Calls'
+        
 
 
 class MpesaCallBacks(BaseModel):

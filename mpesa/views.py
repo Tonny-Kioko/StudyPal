@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 import json
 from django.shortcuts import render, redirect
 import os
-from .models import User
+from base.models import User
 from mpesa.models import *
 from .views import *
 from .urls import *
