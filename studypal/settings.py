@@ -184,16 +184,22 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 # db_from_practice = dj_database_url.config(conn_max_age=600)
 # DATABASES['default'], update()
 
-DATABASES = {
-'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'studypal',
-    'HOST': '127.0.0.1',
-    'PORT': '3306',
-    'USER': 'root',
-    'PASSWORD': '',
-}}
+# DATABASES = {
+# 'default': {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'NAME': 'studypal',
+#     'HOST': '127.0.0.1',
+#     'PORT': '3306',
+#     'USER': 'root',
+#     'PASSWORD': '',
+# }}
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
@@ -232,7 +238,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 
-STATIC_ROOT = '/staticfiles/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
