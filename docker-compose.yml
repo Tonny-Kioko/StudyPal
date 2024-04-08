@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    container_name: studypal
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/studypal
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pgdb
+    environment:
+      - DATABASE_URL=postgres://postgres:c3po@db:5432/studypal
+    restart: unless-stopped
+
+  pgdb:
+    image: postgres
+    container_name: studypaldb
+    environment:
+      - POSTGRES_DB=studypaldb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=c3po
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.36.2
+    container_name: prometheusstudypal
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - C:/Users/cfaki/OneDrive/Eneokazi/StudyPal/prometheus.yml:/etc/prometheus/prometheus.yml #replace with the absolute path to your prometheus file.
+
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafanastudypal
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+
+    restart: unless-stopped
+
+
+
+
+      
+# docker exec -it postgres psql -U postgres
+# CREATE DATABASE studypaldb;
+# CREATE USER postgres WITH PASSWORD 'c3po';
+# GRANT ALL PRIVILEGES ON DATABASE studypaldb TO postgres;
+# \q
+
+# docker-compose up --build
+# docker-compose up --force-recreate
+# docker-compose build --no-cache
+
+#DEBUGGING
+
+#For checking logs and debugging
+# docker logs [containername]
+
+# Grafana access - http://localhost:3000
+

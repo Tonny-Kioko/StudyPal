@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-b38e7kl19rvvn@3*lq!betj$@mf*=oczorl5b+w7ci(vp&#fx4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['', '127.0.0.1', 'https://8175-102-68-79-50.ngrok-free.app', ]
+ALLOWED_HOSTS = ['*', '127.0.0.1' ]
 
 
 # Application definition
@@ -140,7 +140,7 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    #'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
@@ -200,6 +200,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'studypaldb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'c3po',
+#         'HOST': 'pgdb',
+#         'PORT': '5432',
+#     }
+# }
+
 
 
 # Password validation
