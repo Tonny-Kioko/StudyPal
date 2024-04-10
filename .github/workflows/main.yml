@@ -20,7 +20,7 @@ jobs:
               uses: docker/setup-buildx-action@v1
             
             - name: Building Docker Image
-              run:  docker build --file Dockerfile --tag ghcr.io/${{ github.Tonny-Kioko}}/studypal:${{ github.sha }} .
+              run:  docker build --file Dockerfile --tag ghcr.io/${{ github.Tonny-Kioko}}/StudyPal:${{ github.sha }} .
 
             - name: Logging into GitHub COntainer Registry
               run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login ghcr.io -u ${{ github.Tonny-Kioko}} --password-stdin
