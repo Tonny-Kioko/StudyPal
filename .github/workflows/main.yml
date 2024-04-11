@@ -25,9 +25,6 @@ jobs:
             - name: Building the Docker Image
               run: docker build -t tonnykioko/studypal:latest .
             
-            - name: Checking Image is Built
-              run: docker images | grep tonnykioko/studypal:latest 
-
             - name: Pushing Image to Docker Hub
               run: docker push tonnykioko/studypal:latest
 
