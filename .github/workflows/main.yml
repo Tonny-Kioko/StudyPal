@@ -37,6 +37,7 @@ jobs:
                 username: ${{secrets.AWS_USER_NAME}}
                 key: ${{secrets.AWS_SSH_KEY}}
                 script: |
-                    docker run -d --name studypalapp -p 8000:8000 studypal:latest
+                    docker pull tonnykioko/studypal:latest
+                    docker run -p 8000:8000 --name studypalapp studypal:latest
 
 
