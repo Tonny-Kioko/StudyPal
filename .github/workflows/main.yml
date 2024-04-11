@@ -23,13 +23,13 @@ jobs:
                 password: ${{secrets.DOCKER_PASSWORD}}  
 
             - name: Building the Docker Image
-              run: docker build -t Tonny-Kioko/studypal:latest .
+              run: docker build -t tonnykioko/studypal:latest .
             
             - name: Checking Image is Built
-              run: docker images | grep Tonny-Kioko/studypal:latest 
+              run: docker images | grep tonnykioko/studypal:latest 
 
             - name: Pushing Image to Docker Hub
-              run: docker push Tonny-Kioko/studypal:latest
+              run: docker push tonnykioko/studypal:latest
 
     
             ## Running on AWS
