@@ -18,6 +18,7 @@ COPY . /studypal/
 # Setting environment variables
 EXPOSE 8000
 
+
 # Apply database migrations and run the server
 CMD ["bash", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
 

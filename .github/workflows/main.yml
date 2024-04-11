@@ -7,6 +7,7 @@ on:
     pull_request:
         branches: [main]
 
+ 
         
 jobs: 
     build-and-push:
@@ -29,6 +30,7 @@ jobs:
               run: docker push tonnykioko/studypal:latest
 
     
+
             ## Running on AWS
             - name: Deployment to AWS
               uses: appleboy/ssh-action@master
