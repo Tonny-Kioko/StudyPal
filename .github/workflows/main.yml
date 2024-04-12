@@ -40,6 +40,8 @@ jobs:
                 key: ${{secrets.AWS_SSH_KEY}}
                 script: |
                     docker pull tonnykioko/studypal:latest
-                    docker run -p 8000:8000 --name studypalapp tonnykioko/studypal:latest
+                    docker stop studypalapp || true
+                    docker rm studypalapp || true
+                    docker run -d -p 8000:8000 --name studypalapp tonnykioko/studypal:latest
 
 
