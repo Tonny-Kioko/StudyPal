@@ -14,7 +14,7 @@
               </path> 
             </svg> 
           </a> 
-          <h3>{{ room.topic }}</h3> 
+          <h3>-------------------- Study Room --------------------</h3> 
         </div> 
         {% if room.host == request.user %} 
           <div class="room__topRight"> 
@@ -33,15 +33,16 @@
             </a> 
           </div> 
         {% endif %} 
+        
       </div> 
       <div class="room__box scroll"> 
         <div class="room__header scroll"> 
           <div class="room__info"> 
-            <h3>{{room.topic}}</h3> 
-            <span>Created on {{room.created}}</span> 
+            <h3>{{room.name}}</h3> 
+            <span>Created on {{room.created | timesince}}</span> 
           </div> 
           <div class="room__hosted"> 
-            <p>Hosted By {{room.host}} 👩🏽‍💻 </p> 
+            <p>Hosted By @{{room.host.username}} 👩🏽‍💻 </p> 
           </div> 
          
           <div class="room__details">
@@ -50,7 +51,7 @@
             in any relevant way that would help other Pals. You can find/create rooms for any topics you want👩🏽‍💻👨🏽‍💻🧑🏽‍💻!!
             You are most welcome to the discussion🥳🥳🥳!! 
           </div>
-          <span class="room__topics">{{room.topic}}</span>
+          <span class="room__topics">{{room.topic.name}}</span>
         </div>
 
         <div class="room__conversation">
