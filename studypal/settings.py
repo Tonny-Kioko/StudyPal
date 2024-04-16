@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mpesa', 
+    'storages',
     'base.apps.BaseConfig',
     'allauth.account',
     'allauth.socialaccount',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
+    'django_prometheus',
 
     
 ]
@@ -108,7 +110,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 MIDDLEWARE = [
     
-    
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -117,6 +119,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'studypal.urls'

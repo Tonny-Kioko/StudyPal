@@ -48,8 +48,9 @@ services:
 
 
 
-      
-# docker exec -it postgres psql -U postgres
+# docker exec -it <container_name_or_id> bash
+# psql -U postgres    
+
 # CREATE DATABASE studypaldb;
 # CREATE USER postgres WITH PASSWORD 'c3po';
 # GRANT ALL PRIVILEGES ON DATABASE studypaldb TO postgres;
