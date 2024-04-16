@@ -35,14 +35,15 @@
         {% endif %} 
         
       </div> 
+      
       <div class="room__box scroll"> 
         <div class="room__header scroll"> 
           <div class="room__info"> 
             <h3>{{room.name}}</h3> 
-            <span>Created on {{room.created | timesince}}</span> 
+            <span>Created on {{room.created|timesince}}</span> 
           </div> 
           <div class="room__hosted"> 
-            <p>Hosted By @{{room.host.username}} 👩🏽‍💻 </p> 
+            <p>Hosted By @{{room.host.username}}👩🏽‍💻 </p> 
           </div> 
          
           <div class="room__details">
@@ -91,7 +92,7 @@
             {% endfor %}
           </div>
         </div>
-
+        
       </div>
       <div class="room__message">
         <form action="" method="POST">

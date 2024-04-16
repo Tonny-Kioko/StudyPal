@@ -130,7 +130,7 @@ def room(request, pk):
         return redirect('room', pk=room.id)
 
     context = {'rooms': room, 'room_messages': room_messages,'participants': participants,}    
-    return render(request, 'room.html')
+    return render(request, 'room.html', context)
 
 
 @login_required(login_url='login')
@@ -169,7 +169,7 @@ def updateroom(request, pk):
     form = RoomForm(instance=room)
     topics = Topic.objects.all()
     if request.user != room.host:
-        return HttpResponse("You arent allowed this operation")
+        return HttpResponse("You aren't allowed this operation")
 
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=room)
@@ -186,7 +186,7 @@ def deleteRoom(request, pk):
     room = Room.objects.get(id = pk)
 
     if request.user != room.host:
-        return HttpResponse("You arent allowed this operation")
+        return HttpResponse("You aren't allowed this operation")
 
     if request.method == 'POST':
         room.delete()
@@ -199,7 +199,7 @@ def deletemessage(request, pk):
     message = Message.objects.get(id = pk)
 
     if request.user != message.user:
-        return HttpResponse("You arent allowed this operation")
+        return HttpResponse("You aren't allowed this operation")
 
     if request.method == 'POST':
         message.delete()

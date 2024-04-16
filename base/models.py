@@ -17,7 +17,7 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
 
 
-    avatar = models.ImageField(null=True, default="")
+    avatar = models.ImageField(null=True, default="avatar.png", upload_to='StudyPal/images/')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
