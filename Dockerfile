@@ -25,7 +25,7 @@ CMD ["bash", "-c", "python manage.py makemigrations && python manage.py migrate 
 # To build the image from these settings
 #
 
-# docker build --no-cache -t studypal:1.0 -f Dockerfile .
+# docker build --no-cache -t studypal:1.0 .
 
 # To check a list of the images that have been built/are available on your machine
 # docker images

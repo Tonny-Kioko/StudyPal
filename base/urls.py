@@ -1,6 +1,6 @@
 from os import lseek
 from django.urls import path
-from . import views
+from base import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [

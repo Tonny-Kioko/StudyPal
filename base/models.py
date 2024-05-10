@@ -4,10 +4,11 @@ from pyexpat import model
 from unicodedata import name
 from unittest.util import _MAX_LENGTH
 from django.db import models
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.forms import CharField, ModelForm
 from allauth.account.forms import SignupForm
 from django import forms
+
 
 # Create your models here.
 
@@ -63,4 +64,33 @@ class Message(models.Model):
         return (self.body[0:50])
 
 
+class UserManager(BaseUserManager):
+    def create_user(self, first_name, last_name, email, phone_number, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, first_name, last_name, email, phone_number, is_admin, password=None):
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            
+            is_admin=is_admin,
+        )
+        user.is_admin = True
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
     
