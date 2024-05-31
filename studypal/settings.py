@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from turtle import update
 import os
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch_all
+
+from aws_xray_sdk.ext.django.middleware import XRayMiddleware
+
+
 
 
 
@@ -52,6 +58,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.twitter',
     'django_prometheus',
+    'aws_xray_sdk.ext.django',
 
     
 ]
@@ -111,6 +118,7 @@ SOCIALACCOUNT_PROVIDERS = {
 MIDDLEWARE = [
     
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
+    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -313,6 +321,19 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 # Set the default storage backend to S3
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+XRAY_RECORDER = {
+    'AWS_XRAY_TRACING_NAME': 'StudyPal Application', 
+    'PLUGINS': ('EC2Plugin', 'ECSPlugin'),
+    'SAMPLING': False,
+    'AWS_XRAY_DAEMON_ADDRESS': 'xray-daemon:2000', 
+    'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
+}
+
+xray_recorder.configure(service='StudyPal Application')
+plugins = ('EC2Plugin', 'ECSPlugin')
+xray_recorder.configure(plugins=plugins)
+patch_all()
+
 
 
 LOGGING = {
@@ -363,3 +384,5 @@ LOGGING = {
         },
     }
 }
+
+

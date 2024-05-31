@@ -10,18 +10,21 @@ WORKDIR /studypal
 # Copy requirements.txt and install dependencies
 COPY ./requirements.txt /studypal/
 
+## Initiating a DB before web app is created
+
 RUN pip install -r requirements.txt
 
 # Copy project files
 COPY . /studypal/
 
 # Setting environment variables
-EXPOSE 8000
+#EXPOSE 8000
 
 
 # Apply database migrations and run the server
-CMD ["bash", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000"]
+#CMD ["bash", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000"]
 
+RUN chmod u+x ./start.sh
 # To build the image from these settings
 #
 

@@ -1,0 +1,571 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Root template generated via ECS ComposeX",
+  "Mappings": {
+    "ComposeXDefaults": {
+      "ECS": {
+        "PlatformVersion": "1.4.0"
+      }
+    }
+  },
+  "Metadata": {
+    "Properties": {
+      "GeneratedOn": "2024-05-30T10:51:06.570472",
+      "Version": "1.1.2"
+    },
+    "Type": "ComposeX"
+  },
+  "Resources": {
+    "EcsCluster": {
+      "Metadata": {
+        "Properties": {
+          "Version": "1.1.2",
+          "ecs_composex::module": "ecs_composex.ecs"
+        },
+        "Type": "ComposeX"
+      },
+      "Properties": {
+        "CapacityProviders": [
+          "FARGATE",
+          "FARGATE_SPOT"
+        ],
+        "ClusterName": {
+          "Ref": "AWS::StackName"
+        },
+        "Configuration": {
+          "ExecuteCommandConfiguration": {
+            "LogConfiguration": {
+              "CloudWatchLogGroupName": {
+                "Ref": "EcsExecLogGroup"
+              }
+            },
+            "Logging": "OVERRIDE"
+          }
+        },
+        "DefaultCapacityProviderStrategy": [
+          {
+            "Base": 1,
+            "CapacityProvider": "FARGATE_SPOT",
+            "Weight": 2
+          },
+          {
+            "CapacityProvider": "FARGATE",
+            "Weight": 1
+          }
+        ]
+      },
+      "Type": "AWS::ECS::Cluster"
+    },
+    "EcsExecLogGroup": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "ecs/execute-logs/${AWS::StackName}"
+        },
+        "RetentionInDays": 120
+      },
+      "Type": "AWS::Logs::LogGroup"
+    },
+    "ServicesNetworking": {
+      "DependsOn": [],
+      "Properties": {
+        "Parameters": {
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/ServicesNetworking.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "grafana": {
+      "DependsOn": [
+        "vpc",
+        "prometheus",
+        "iam"
+      ],
+      "Properties": {
+        "Parameters": {
+          "AppSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.AppSubnets"
+            ]
+          },
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "EcsLaunchType": "FARGATE_PROVIDERS",
+          "FargateCpuRamConfiguration": "256!512",
+          "FargatePlatformVersion": {
+            "Fn::FindInMap": [
+              "ComposeXDefaults",
+              "ECS",
+              "PlatformVersion"
+            ]
+          },
+          "MicroServiceName": "grafana",
+          "MicroserviceHostname": "grafana",
+          "MicroservicesCount": 1,
+          "PublicSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.PublicSubnets"
+            ]
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "ServiceLogGroupRetentionPeriod": 30,
+          "StorageSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.StorageSubnets"
+            ]
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          },
+          "grafanaEcsExecutionRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.grafanaEcsExecutionRoleIamRoleArn"
+            ]
+          },
+          "grafanaEcsExecutionRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.grafanaEcsExecutionRoleIamRoleName"
+            ]
+          },
+          "grafanaEcsTaskRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.grafanaEcsTaskRoleIamRoleArn"
+            ]
+          },
+          "grafanaEcsTaskRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.grafanaEcsTaskRoleIamRoleName"
+            ]
+          },
+          "grafanaImageUrl": "grafana/grafana",
+          "grafanaSG": {
+            "Fn::GetAtt": [
+              "ServicesNetworking",
+              "Outputs.grafanaSG"
+            ]
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/grafana.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "iam": {
+      "DependsOn": [],
+      "Properties": {
+        "Parameters": {
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/iam.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "pgdb": {
+      "DependsOn": [
+        "vpc",
+        "iam"
+      ],
+      "Properties": {
+        "Parameters": {
+          "AppSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.AppSubnets"
+            ]
+          },
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "EcsLaunchType": "FARGATE_PROVIDERS",
+          "FargateCpuRamConfiguration": "256!512",
+          "FargatePlatformVersion": {
+            "Fn::FindInMap": [
+              "ComposeXDefaults",
+              "ECS",
+              "PlatformVersion"
+            ]
+          },
+          "MicroServiceName": "pgdb",
+          "MicroserviceHostname": "pgdb",
+          "MicroservicesCount": 1,
+          "PublicSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.PublicSubnets"
+            ]
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "ServiceLogGroupRetentionPeriod": 30,
+          "StorageSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.StorageSubnets"
+            ]
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          },
+          "pgdbEcsExecutionRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.pgdbEcsExecutionRoleIamRoleArn"
+            ]
+          },
+          "pgdbEcsExecutionRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.pgdbEcsExecutionRoleIamRoleName"
+            ]
+          },
+          "pgdbEcsTaskRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.pgdbEcsTaskRoleIamRoleArn"
+            ]
+          },
+          "pgdbEcsTaskRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.pgdbEcsTaskRoleIamRoleName"
+            ]
+          },
+          "pgdbImageUrl": "postgres",
+          "pgdbSG": {
+            "Fn::GetAtt": [
+              "ServicesNetworking",
+              "Outputs.pgdbSG"
+            ]
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/pgdb.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "prometheus": {
+      "DependsOn": [
+        "vpc",
+        "iam"
+      ],
+      "Properties": {
+        "Parameters": {
+          "AppSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.AppSubnets"
+            ]
+          },
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "EcsLaunchType": "FARGATE_PROVIDERS",
+          "FargateCpuRamConfiguration": "256!512",
+          "FargatePlatformVersion": {
+            "Fn::FindInMap": [
+              "ComposeXDefaults",
+              "ECS",
+              "PlatformVersion"
+            ]
+          },
+          "MicroServiceName": "prometheus",
+          "MicroserviceHostname": "prometheus",
+          "MicroservicesCount": 1,
+          "PublicSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.PublicSubnets"
+            ]
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "ServiceLogGroupRetentionPeriod": 30,
+          "StorageSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.StorageSubnets"
+            ]
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          },
+          "prometheusEcsExecutionRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.prometheusEcsExecutionRoleIamRoleArn"
+            ]
+          },
+          "prometheusEcsExecutionRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.prometheusEcsExecutionRoleIamRoleName"
+            ]
+          },
+          "prometheusEcsTaskRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.prometheusEcsTaskRoleIamRoleArn"
+            ]
+          },
+          "prometheusEcsTaskRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.prometheusEcsTaskRoleIamRoleName"
+            ]
+          },
+          "prometheusImageUrl": "prom/prometheus",
+          "prometheusSG": {
+            "Fn::GetAtt": [
+              "ServicesNetworking",
+              "Outputs.prometheusSG"
+            ]
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/prometheus.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "web": {
+      "DependsOn": [
+        "vpc",
+        "iam",
+        "xraydaemon",
+        "pgdb"
+      ],
+      "Properties": {
+        "Parameters": {
+          "AppSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.AppSubnets"
+            ]
+          },
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "EcsLaunchType": "FARGATE_PROVIDERS",
+          "FargateCpuRamConfiguration": "256!512",
+          "FargatePlatformVersion": {
+            "Fn::FindInMap": [
+              "ComposeXDefaults",
+              "ECS",
+              "PlatformVersion"
+            ]
+          },
+          "MicroServiceName": "web",
+          "MicroserviceHostname": "web",
+          "MicroservicesCount": 1,
+          "PublicSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.PublicSubnets"
+            ]
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "ServiceLogGroupRetentionPeriod": 30,
+          "StorageSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.StorageSubnets"
+            ]
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          },
+          "webEcsExecutionRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.webEcsExecutionRoleIamRoleArn"
+            ]
+          },
+          "webEcsExecutionRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.webEcsExecutionRoleIamRoleName"
+            ]
+          },
+          "webEcsTaskRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.webEcsTaskRoleIamRoleArn"
+            ]
+          },
+          "webEcsTaskRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.webEcsTaskRoleIamRoleName"
+            ]
+          },
+          "webImageUrl": "tonnykioko/studypal:latest",
+          "webSG": {
+            "Fn::GetAtt": [
+              "ServicesNetworking",
+              "Outputs.webSG"
+            ]
+          },
+          "Command": ["./wait-for-db.sh", "pgdb", "opentelemetry-instrument", "bash", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"],
+          "Environment": [
+            { "Name": "POSTGRES_DB", "Value": "studypaldb" },
+            { "Name": "POSTGRES_USER", "Value": "postgres" },
+            { "Name": "POSTGRES_PASSWORD", "Value": "c3po" },
+            { "Name": "POSTGRES_HOST", "Value": "pgdb" },
+            { "Name": "POSTGRES_PORT", "Value": "5432" },
+            { "Name": "OTEL_SERVICE_NAME", "Value": "my-service-name" },
+            { "Name": "OTEL_EXPORTER_OTLP_PROTOCOL", "Value": "http/protobuf" },
+            { "Name": "OTEL_EXPORTER_OTLP_ENDPOINT", "Value": "https://api.honeycomb.io" },
+            { "Name": "OTEL_EXPORTER_OTLP_HEADERS", "Value": "x-honeycomb-team=J0CNOIywMr5R3ACl9HKwyA" }
+          ]
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/web.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "xraydaemon": {
+      "DependsOn": [
+        "vpc",
+        "iam"
+      ],
+      "Properties": {
+        "Parameters": {
+          "AppSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.AppSubnets"
+            ]
+          },
+          "EcsCluster": {
+            "Ref": "EcsCluster"
+          },
+          "EcsLaunchType": "FARGATE_PROVIDERS",
+          "FargateCpuRamConfiguration": "256!512",
+          "FargatePlatformVersion": {
+            "Fn::FindInMap": [
+              "ComposeXDefaults",
+              "ECS",
+              "PlatformVersion"
+            ]
+          },
+          "MicroServiceName": "xraydaemon",
+          "MicroserviceHostname": "xraydaemon",
+          "MicroservicesCount": 1,
+          "PublicSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.PublicSubnets"
+            ]
+          },
+          "RootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "ServiceLogGroupRetentionPeriod": 30,
+          "StorageSubnets": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.StorageSubnets"
+            ]
+          },
+          "VpcId": {
+            "Fn::GetAtt": [
+              "vpc",
+              "Outputs.VpcId"
+            ]
+          },
+          "xraydaemonEcsExecutionRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.xraydaemonEcsExecutionRoleIamRoleArn"
+            ]
+          },
+          "xraydaemonEcsExecutionRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.xraydaemonEcsExecutionRoleIamRoleName"
+            ]
+          },
+          "xraydaemonEcsTaskRoleIamRoleArn": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.xraydaemonEcsTaskRoleIamRoleArn"
+            ]
+          },
+          "xraydaemonEcsTaskRoleIamRoleName": {
+            "Fn::GetAtt": [
+              "iam",
+              "Outputs.xraydaemonEcsTaskRoleIamRoleName"
+            ]
+          },
+          "xraydaemonImageUrl": "amazon/aws-xray-daemon",
+          "xraydaemonSG": {
+            "Fn::GetAtt": [
+              "ServicesNetworking",
+              "Outputs.xraydaemonSG"
+            ]
+          }
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/xraydaemon.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    },
+    "vpc": {
+      "Metadata": {
+        "Properties": {
+          "Version": "1.1.2",
+          "ecs_composex::module": "ecs_composex.vpc"
+        },
+        "Type": "ComposeX"
+      },
+      "Properties": {
+        "Parameters": {
+          "CIDRBlock": "10.0.0.0/16",
+          "EnableDnsSupport": "true",
+          "MaxAzs": 3,
+          "PublicSubnetCidrBlocks": "10.0.0.0/19,10.0.32.0/19,10.0.64.0/19",
+          "StackType": "App",
+          "SubnetMask": 24
+        },
+        "TemplateURL": "https://s3.amazonaws.com/studypal-avatars/2024/05/30/1051/05e944/vpc.json"
+      },
+      "Type": "AWS::CloudFormation::Stack"
+    }
+  }
+}

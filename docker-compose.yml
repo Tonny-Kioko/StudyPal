@@ -1,18 +1,5 @@
 version: "3.8"
 services:
-  web:
-    build: .
-    container_name: studypal
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/studypal
-    ports:
-      - "8000:8000"
-    depends_on:
-      - pgdb
-    environment:
-      - DATABASE_URL=postgres://postgres:c3po@db:5432/studypal
-    restart: unless-stopped
 
   pgdb:
     image: postgres
@@ -21,8 +8,33 @@ services:
       - POSTGRES_DB=studypaldb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=c3po
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql      
     restart: unless-stopped
 
+
+  web:
+    image: tonnykioko/studypal:latest   
+    container_name: studypal
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/studypal
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pgdb
+      - xray-daemon
+    environment:
+      - DATABASE_URL=postgres://postgres:c3po@db:5432/studypal
+      - OTEL_SERVICE_NAME=studypal
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+      - OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=J0CNOIywMr5R3ACl9HKwyA"
+    restart: unless-stopped
+
+  
   prometheus:
     image: prom/prometheus:v2.36.2
     container_name: prometheusstudypal
@@ -41,9 +53,22 @@ services:
     depends_on:
       - prometheus
     ports:
-      - "3000:3000"
+      - "3100:3000"
 
     restart: unless-stopped
+
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    container_name: xray-daemon
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: "us-east-1"
+    command: 
+      - "xray -o -b 0.0.0.0:2000" 
+    ports:
+      - "2000:2000/udp"
+   
 
 
 
