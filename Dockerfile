@@ -24,7 +24,10 @@ COPY . /studypal/
 # Apply database migrations and run the server
 #CMD ["bash", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000"]
 
-RUN chmod u+x ./start.sh
+COPY ./start.sh /studypal/
+RUN chmod u+x /studypal/start.sh
+
+CMD ["/studypal/start.sh"]
 # To build the image from these settings
 #
 

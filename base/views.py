@@ -12,11 +12,16 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from studypal.utils import generate_cache_key
+from django.conf import settings
+
+CACHE_TTL = 60 * 10
+
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
-
-
 
 
 # Create your views here.
@@ -24,54 +29,52 @@ User = get_user_model()
 # rooms = [
 #    {'id':1, 'name': 'Learning Python With Pals!'},
 #   {'id':2, 'name': 'Learning JavaScript With Pals!'},
- #   {'id':3, 'name': 'Learning SQL With Pals!'},
-  #  {'id':4, 'name': 'Learning Frontend Development With Pals!'},
-   # {'id':5, 'name': 'Learning Design With Pals!'},
-#]
+#   {'id':3, 'name': 'Learning SQL With Pals!'},
+#  {'id':4, 'name': 'Learning Frontend Development With Pals!'},
+# {'id':5, 'name': 'Learning Design With Pals!'},
+# ]
 
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 
-def loginPage(request):
-    page = 'login'
-    
-    if request.user.is_authenticated:
-        return redirect('home')
 
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
+@cache_page(CACHE_TTL, key_prefix="login_page")
+def loginPage(request):
+    page = "login"
+
+    # Skip caching for authenticated users
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    # Only cache GET requests, no cache for POST
+    if request.method == "POST":
+        email = request.POST.get("email").lower()
+        password = request.POST.get("password")
 
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            messages.error(request, "User does not Exist")
-            return redirect('login')  # Redirect back to the login page with the error message.
+            messages.error(request, "User does not exist")
+            return redirect("login")
 
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect("home")
         else:
-            messages.error(request, 'Username or password is incorrect')
-            return redirect('login')  # Redirect back to the login page with the error message.
+            messages.error(request, "Username or password is incorrect")
+            return redirect("login")
 
-    context = {'page': page}
-    return render(request, 'login_register.html', context)
+    context = {"page": page}
+    return render(request, "login_register.html", context)
+
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
-
-
-
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.forms import ValidationError
 
 def registerUser(request):
     form = MyUserCreationform()
@@ -98,42 +101,73 @@ def registerUser(request):
     return render(request, 'login_register.html', {'form': form})
 
 
-
 def home(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    q = request.GET.get("q", "")
+
+    # Generate a unique cache key for this view and query
+    cache_key = generate_cache_key("home", q)
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        return cached_data  # Return cached response
 
     rooms = Room.objects.filter(
-        Q(topic__name__icontains=q) |
-        Q(name__icontains = q) |
-        Q(description__icontains = q)
-    )    
-
-
-    topics = Topic.objects.all()[0:5]
+        Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)
+    )
+    topics = Topic.objects.all()[:5]
     room_count = rooms.count()
     room_messages = Message.objects.all()
 
-    
-    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
-    return render(request, 'home.html', context)
+    context = {
+        "rooms": rooms,
+        "topics": topics,
+        "room_count": room_count,
+        "room_messages": room_messages,
+    }
+    response = render(request, "home.html", context)
+
+    cache.set(cache_key, response, timeout=settings.CACHE_TTL)
+
+    return response
 
 
 def room(request, pk):
-    room = Room.objects.get(id = pk)
-    room_messages = room.message_set.all()
-    participants = room.participants.all()
-    if request.method == "POST":
-        messsage = Message.objects.create(
-            user = request.user,
-            room = room, 
-            body = request.POST.get('body')
+  
+    cache_key = generate_cache_key("room", pk)
+    cached_data = cache.get(cache_key)
 
+    
+    if cached_data:
+        room, room_messages, participants = cached_data
+    else:
+        # Fetch room data, messages, and participants if not cached
+        room = get_object_or_404(Room, id=pk)
+        room_messages = room.message_set.all()
+        participants = room.participants.all()
+
+       
+        cache.set(
+            cache_key, (room, room_messages, participants), timeout=settings.CACHE_TTL
+        )
+
+    if request.method == "POST":
+       
+        Message.objects.create(
+            user=request.user, room=room, body=request.POST.get("body")
         )
         room.participants.add(request.user)
-        return redirect('room', pk=room.id)
 
-    context = {'rooms': room, 'room_messages': room_messages,'participants': participants,}    
-    return render(request, 'room.html', context)
+        
+        cache.delete(cache_key)
+
+        return redirect("room", pk=room.id)
+
+    context = {
+        "room": room,
+        "room_messages": room_messages,
+        "participants": participants,
+    }
+    return render(request, "room.html", context)
 
 
 @login_required(login_url='login')
@@ -223,13 +257,31 @@ def updateUser(request):
 
     return render(request, 'update-user.html', {'form': form})
 
+
 def topicsPage(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    topics = Topic.objects.filter(name__icontains=q)
-    return render(request, 'topics.html', {'topics': topics})
+
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
+    cache_key = generate_cache_key("topics_page", q)
+
+    topics = cache.get(cache_key)
+
+    if not topics:
+        topics = Topic.objects.filter(name__icontains=q)
+        cache.set(cache_key, topics, timeout=settings.CACHE_TTL)
+    return render(request, "topics.html", {"topics": topics})
+
 
 def activityPage(request):
-    room_messages = Message.objects.all()
-    return render(request, 'activity.html', {'room_messages': room_messages})
+   
+    cache_key = generate_cache_key("activity_page", "")
+
+    
+    room_messages = cache.get(cache_key)
+
+    if not room_messages:        
+        room_messages = Message.objects.all()        
+        cache.set(cache_key, room_messages, timeout=settings.CACHE_TTL)
+    return render(request, "activity.html", {"room_messages": room_messages})
+
 
 # def LipaNaMpesa():

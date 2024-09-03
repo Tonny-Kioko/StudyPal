@@ -11,12 +11,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql      
+      - postgresql-data:/var/lib/postgresql/data     
     restart: unless-stopped
 
 
   web:
-    image: tonnykioko/studypal:latest   
+    build: .  
     container_name: studypal
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
@@ -34,6 +34,23 @@ services:
       - OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=J0CNOIywMr5R3ACl9HKwyA"
     restart: unless-stopped
 
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    container_name: xray-daemon
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: "us-east-1"
+    command: 
+      - "xray -o -b 0.0.0.0:2000" 
+    ports:
+      - "2000:2000/udp"
+   
+  redis:
+    image: redis:7.0.11-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
   
   prometheus:
     image: prom/prometheus:v2.36.2
@@ -53,23 +70,14 @@ services:
     depends_on:
       - prometheus
     ports:
-      - "3100:3000"
+      - "3000:3000"
 
     restart: unless-stopped
 
-  xray-daemon:
-    image: "amazon/aws-xray-daemon"
-    container_name: xray-daemon
-    environment:
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
-      AWS_REGION: "us-east-1"
-    command: 
-      - "xray -o -b 0.0.0.0:2000" 
-    ports:
-      - "2000:2000/udp"
-   
-
+  
+volumes:
+  postgresql-data:
+    driver: local
 
 
 

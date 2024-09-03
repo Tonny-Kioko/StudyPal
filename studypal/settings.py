@@ -19,9 +19,6 @@ from aws_xray_sdk.core import patch_all
 from aws_xray_sdk.ext.django.middleware import XRayMiddleware
 
 
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,39 +32,38 @@ SECRET_KEY = 'django-insecure-b38e7kl19rvvn@3*lq!betj$@mf*=oczorl5b+w7ci(vp&#fx4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*', '127.0.0.1' ]
+ALLOWED_HOSTS = ['*' ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'mpesa', 
-    'storages',
-    'base.apps.BaseConfig',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.linkedin',
-    'allauth.socialaccount.providers.twitter',
-    'django_prometheus',
-    'aws_xray_sdk.ext.django',
-
-    
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "mpesa",
+    "storages",
+    "base.apps.BaseConfig",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.facebook",
+    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.linkedin",
+    "allauth.socialaccount.providers.twitter",
+    "django_prometheus",
+    "aws_xray_sdk.ext.django",
+    "debug_toolbar",
 ]
 
 # SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED ,
-# SOCIALACCOUNT_EMAIL_REQUIRED = ACCOUNT_EMAIL_REQUIRED, 
+# SOCIALACCOUNT_EMAIL_REQUIRED = ACCOUNT_EMAIL_REQUIRED,
 SOCIALACCOUNT_STORE_TOKENS=False, 
 
-#Social Account Providers settings for signup options
+# Social Account Providers settings for signup options
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
@@ -113,21 +109,19 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-
-
 MIDDLEWARE = [
-    
-    'django_prometheus.middleware.PrometheusBeforeMiddleware',
-    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_prometheus.middleware.PrometheusAfterMiddleware',
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    "aws_xray_sdk.ext.django.middleware.XRayMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = 'studypal.urls'
@@ -155,19 +149,19 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-#The account confirmation will require a new request after three days
+# The account confirmation will require a new request after three days
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3, 
 
-#This option allows you to set whether the email address should be verified to register
+# This option allows you to set whether the email address should be verified to register
 ACCOUNT_EMAIL_REQUIRED = True,
 
-#email verification is necessary for a user to log in
+# email verification is necessary for a user to log in
 ACCOUNT_EMAIL_VERIFICATION = "mandatory",
 
-#Login Attempt Limit:
+# Login Attempt Limit:
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5,
 
-#Login Attempt Limit timeout: 
+# Login Attempt Limit timeout:
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 3600, #Two Hours before retrying.
 
 ACCOUNT_FORMS = {
@@ -206,24 +200,48 @@ WSGI_APPLICATION = 'studypal.wsgi.application'
 #     'PASSWORD': '',
 # }}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'studypaldb',
-#         'USER': 'postgres',
-#         'PASSWORD': 'c3po',
-#         'HOST': 'pgdb',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'studypaldb',
+        'USER': 'postgres',
+        'PASSWORD': 'c3po',
+        'HOST': 'pgdb',
+        'PORT': '5432',
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": [
+            "redis://127.0.0.1:26379/0",
+            "redis://127.0.0.1:26380/0",
+            "redis://127.0.0.1:26381/0",
+        ],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.SentinelClient",
+            "SENTINEL_KWARGS": {
+                "socket_timeout": 0.1,
+            },
+            "KEY_PREFIX": "studypal",
+            "VERSION": 1,
+        },
+    }
+}
+CACHE_KEY_PREFIX = "studypal_"
+CACHE_TTL = 60 * 10
+# Optional: This is to ensure Django sessions are stored in Redis
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 
 # Password validation
@@ -267,13 +285,10 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
 
-
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 MEDIA_ROOT = BASE_DIR/ 'static/images'
-
-
 
 
 # Default primary key field type
@@ -334,7 +349,14 @@ plugins = ('EC2Plugin', 'ECSPlugin')
 xray_recorder.configure(plugins=plugins)
 patch_all()
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
+DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.cache.CachePanel",
+
+]
 
 LOGGING = {
     'version': 1,
@@ -384,5 +406,3 @@ LOGGING = {
         },
     }
 }
-
-
