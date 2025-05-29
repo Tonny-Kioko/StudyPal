@@ -1,4 +1,3 @@
-version: "3.8"
 services:
 
   pgdb:
@@ -15,7 +14,7 @@ services:
     restart: unless-stopped
 
 
-  web:
+  studypal_backend:
     build: .  
     container_name: studypal
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
