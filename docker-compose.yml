@@ -58,7 +58,7 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
-      - C:/Users/cfaki/OneDrive/Eneokazi/StudyPal/prometheus.yml:/etc/prometheus/prometheus.yml #replace with the absolute path to your prometheus file.
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml #replace with the absolute path to your prometheus file.
 
     ports:
       - "9090:9090"
