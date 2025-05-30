@@ -1,7 +1,7 @@
 services:
 
   pgdb:
-    image: postgres
+    image: postgres:latest
     container_name: studypaldb
     environment:
       - POSTGRES_DB=studypaldb
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   xray-daemon:
-    image: "amazon/aws-xray-daemon"
+    image: "amazon/aws-xray-daemon:latest"
     container_name: xray-daemon
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
@@ -52,7 +52,7 @@ services:
       - "6379:6379"
   
   prometheus:
-    image: prom/prometheus:v2.36.2
+    image: prom/prometheus:latest
     container_name: prometheusstudypal
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:latest
     container_name: grafanastudypal
     depends_on:
       - prometheus

@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.12-slim
 
 # Set environment variables (optional)
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -11,6 +11,7 @@ WORKDIR /studypal
 COPY ./requirements.txt /studypal/
 
 ## Initiating a DB before web app is created
+RUN apt-get update && apt-get install -y libpq-dev gcc python3-dev
 
 RUN pip install -r requirements.txt
 

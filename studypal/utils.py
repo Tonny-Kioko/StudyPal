@@ -1,5 +1,6 @@
 from django.conf import settings
 import hashlib
+from django.core.cache import cache
 
 def generate_cache_key(view_name, identifier=None):
 

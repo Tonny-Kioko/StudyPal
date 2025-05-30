@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from turtle import update
+
 import os
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
@@ -147,6 +147,7 @@ TEMPLATES = [
 AUTHENTICATION_BACKENDS = (
     #'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'studypal.backends.EmailBackend',
 )
 
 # The account confirmation will require a new request after three days
@@ -214,7 +215,7 @@ DATABASES = {
         'NAME': 'studypaldb',
         'USER': 'postgres',
         'PASSWORD': 'c3po',
-        'HOST': 'pgdb',
+        'HOST': 'studypaldb',
         'PORT': '5432',
     }
 }
@@ -222,21 +223,15 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": [
-            "redis://127.0.0.1:26379/0",
-            "redis://127.0.0.1:26380/0",
-            "redis://127.0.0.1:26381/0",
-        ],
+        "LOCATION": "redis://studypal-redis-1:6379/1",
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.SentinelClient",
-            "SENTINEL_KWARGS": {
-                "socket_timeout": 0.1,
-            },
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "KEY_PREFIX": "studypal",
             "VERSION": 1,
         },
     }
 }
+
 CACHE_KEY_PREFIX = "studypal_"
 CACHE_TTL = 60 * 10
 # Optional: This is to ensure Django sessions are stored in Redis
